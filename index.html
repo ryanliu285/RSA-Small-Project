@@ -1,0 +1,94 @@
+<html>
+  <body>
+    <script>
+      var p = 0;
+      var q = 0;
+      var e = 0;
+
+      function readInputs() {
+        if (document.getElementById('p').value.length == 0 || document.getElementById('q').value.length == 0 || document.getElementById('m').value.length == 0 || document.getElementById('e').value.length == 0) {
+          document.getElementById("error").innerHTML = "ERROR: PLEASE ENTER SOMETHING IN ALL FIELDS";
+          return;
+        }
+        p = parseInt(document.getElementById('p').value);
+        q = parseInt(document.getElementById('q').value);
+        var m = parseInt(document.getElementById('m').value);
+        e = parseInt(document.getElementById('e').value);
+        var n = p*q;
+        console.log(p,q,e,m,n);
+        if (!checkPrime(p) || !checkPrime(q)) {
+          document.getElementById("error").innerHTML = "ERROR: PLEASE ENTER TWO PRIMES";
+          return;
+        }
+        var result = Math.pow(m,e)%n;
+        document.getElementById("decrypt").value = result;
+        document.getElementById("error").innerHTML = "RESULT: " + result;
+      }
+
+      function checkPrime(num) {
+        if (num < 2) {
+          return false;
+        }
+        for (var i = 2; i < num; i++) {
+          if (num % i == 0 && num != i) {
+            return false;
+          }
+        }
+        return true;
+      }
+
+      function readDecrypt() {
+        if (document.getElementById("decrypt").value.length == 0) {
+          document.getElementById("error").innerHTML = "ERROR: PLEASE ENTER SOMETHING IN ALL FIELDS OR CALCULATE ENCRYPTED MESSAGE FIRST (TO SET PUBLIC KEY)";
+          return;
+        }
+        var m = parseInt(document.getElementById('decrypt').value);
+        var temp = extendedEuclid(e, (p-1)*(q-1));
+        console.log(p,q,e,m,temp);
+        document.getElementById("error").innerHTML = "RESULT: " + Math.pow(m,temp)%(p*q);
+      }
+
+      function extendedEuclid(y, x) {
+        var array = [x,y];
+        var iterations = 0;
+        while (y != 0) {
+          var temp = x;
+          x = y;
+          y = temp%y;
+          array.push(x);
+          array.push(y);
+          iterations+=1;
+        }
+        console.log(iterations);
+        iterations = 0;
+        var a = array.pop();
+        var b =  array.pop();
+        while (array.length != 0) {
+          var temp = a;
+          a = b;
+          b = temp - Math.floor(array.pop() / array.pop())*b;
+          iterations+=1;
+        }
+        console.log(iterations);
+        return b;
+      }
+    </script>
+    <form>
+      <h1>RSA simulator thingy (make sure primes are large)</h1>
+      <h1 id = "error" style = "color: red"></h1>
+      <p>Any prime: </p><input id = "p" type = "text"></input>
+      <p>Different prime: </p><input id = "q" type = "text"></input>
+      <p>Exponent (any number): </p><input id = "e" type = "text"></input>
+      <p>Message (Enter some number): </p><input id = "m" type = "text"></input>
+      <button type = "button" onclick = "readInputs()">Calculate encrypted message</button>
+      <p>Encrypted num: </p><input id = "decrypt" type = "text"></input>
+      <button type = "button" onclick = "readDecrypt()">Calculate decrypted message</button>
+    </form>
+    <script type = "javascript">
+
+      function readPoints() {
+        console.log("yeet");
+      }
+    </script>
+  </body>
+</html>
